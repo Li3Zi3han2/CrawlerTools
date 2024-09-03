@@ -14,7 +14,7 @@ m3u8=ImportTextFromURL[url,header];
 Which[
 (*如果是多变体播放列表*)
 StringContainsQ[m3u8,"#EXT-X-STREAM-INF:"],
-variantDataset=Dataset[StringCases[m3u8,"#EXT-X-STREAM-INF:"~~Shortest[para___]~~"\r\n"~~Shortest[variantURL___]~~"\r\n":>Join[<|Rule@@@Partition[SemanticImportString[para,Automatic,"List",Delimiters->{",","="}],2]|>,<|"VARIANTURL"->variantURL|>]]];
+variantDataset=Dataset[StringCases[m3u8,"#EXT-X-STREAM-INF:"~~Shortest[para___]~~("\r"|"\n")..~~Shortest[variantURL___]~~("\r"|"\n")..:>Join[<|Rule@@@Partition[SemanticImportString[para,Automatic,"List",Delimiters->{",","="}],2]|>,<|"VARIANTURL"->variantURL|>]]];
 variantDataset=variantDataset/.{value_String/;StringMatchQ[value,NumberString]:>ToExpression[value],value_String/;StringMatchQ[value,NumberString~~"x"~~NumberString]:>ToExpression[StringSplit[value,"x"]]};
 variantURL=variantDataset[TakeLargestBy[#["RESOLUTION"][[2]]&,1]][1,"VARIANTURL"];
 variantURLParseRuleList=Normal[URLParse[variantURL]];
