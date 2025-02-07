@@ -26,7 +26,7 @@ StringContainsQ[m3u8,"#EXT-X-PLAYLIST-TYPE:VOD"],
 tsURL=StringTrim[StringCases[m3u8,StartOfLine~~Except["#"]~~Shortest[___]~~EndOfLine]];
 tsURLParseRuleList=Normal[URLParse/@tsURL];
 tsURL=URLBuild[urlParseRuleList/.HoldPattern["Path"->path_]:>("Path"->Join[Most[path],#])]&/@("Path"/.tsURLParseRuleList);
-tsFile=Table[DownloadFileFromURL[tsURL[[i]],Directory[],header],{i,1,Length[tsURL]}];
+tsFile=Table[DownloadFileFromURL[If[StringContainsQ[tsURL[[i]],"pornhub"],URLDecode[tsURL[[i]]],tsURL[[i]]],Directory[],header],{i,1,Length[tsURL]}];
 FFmpegFileJoin[tsFile,file],
 (*其他情况*)
 True,
